@@ -2,6 +2,7 @@ import { getAppId, isWxMiniEnv, variableTypeDetection } from 'encode-monitor-uti
 import { ErrorTypes, EventTypes } from 'encode-monitor-shared';
 import { ReportDataType } from 'encode-monitor-types';
 import { options } from './options';
+
 const allErrorNumber: unknown = {};
 /**
  * generate error unique Id
@@ -123,7 +124,7 @@ export function hashCode(str: string): number {
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i);
     hash = (hash << 5) - hash + char;
-    hash = hash & hash;
+    hash &= hash;
   }
   return hash;
 }

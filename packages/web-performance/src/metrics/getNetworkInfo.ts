@@ -15,9 +15,7 @@ const getNetworkInfo = (): INetworkInformation | undefined => {
     return;
   }
 
-  const connection = (
-    'connection' in navigator ? navigator['connection'] : {}
-  ) as INetworkInformation;
+  const connection = ('connection' in navigator ? navigator.connection : {}) as INetworkInformation;
 
   const { downlink, effectiveType, rtt } = connection;
 

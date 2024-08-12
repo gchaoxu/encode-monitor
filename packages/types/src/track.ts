@@ -13,8 +13,8 @@ export enum EActionType {
   OTHER = 'OTHER',
 }
 
+// 网络类型: 4g,3g,5g,wifi
 export interface DeviceInfo {
-  //网络类型: 4g,3g,5g,wifi
   netType: string;
   clientWidth: number;
   clientHeight: number;

@@ -1,52 +1,56 @@
-import Store from '../core/store'
-import { WxPerformanceDataType, WxPerformanceItemType } from '../constant'
-import { WxPerformanceItem, WxPerformanceAnyObj } from '../types/index'
+import Store from '../core/store';
+import { WxPerformanceDataType, WxPerformanceItemType } from '../constant';
+import { WxPerformanceItem, WxPerformanceAnyObj } from '../types/index';
 
 function pushLife(store: Store, itemType: WxPerformanceItemType) {
-  store.push(WxPerformanceDataType.WX_LIFE_STYLE, { itemType, timestamp: Date.now() })
+  store.push(WxPerformanceDataType.WX_LIFE_STYLE, { itemType, timestamp: Date.now() });
 }
 
 function pushAction(store: Store, data: WxPerformanceItem) {
-  store.push(WxPerformanceDataType.WX_USER_ACTION, { ...data, timestamp: Date.now() })
+  store.push(WxPerformanceDataType.WX_USER_ACTION, { ...data, timestamp: Date.now() });
 }
 
 function pushNetwork(store: Store, data: WxPerformanceItem) {
-  store.push(WxPerformanceDataType.WX_NETWORK, { ...data, timestamp: Date.now() })
+  store.push(WxPerformanceDataType.WX_NETWORK, { ...data, timestamp: Date.now() });
 }
 
 const Events = {
-  [WxPerformanceItemType.AppOnLaunch]: function (args: any[]) {
-    let _this = this as Store
-    const now = Date.now()
-    _this.setLaunchTime(now)
-    _this.push(WxPerformanceDataType.WX_LIFE_STYLE, { itemType: WxPerformanceItemType.AppOnLaunch, timestamp: now })
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  [WxPerformanceItemType.AppOnLaunch](args: any[]) {
+    const _this = this as Store;
+    const now = Date.now();
+    _this.setLaunchTime(now);
+    _this.push(WxPerformanceDataType.WX_LIFE_STYLE, {
+      itemType: WxPerformanceItemType.AppOnLaunch,
+      timestamp: now,
+    });
   },
-  [WxPerformanceItemType.AppOnShow]: function () {
-    pushLife(this, WxPerformanceItemType.AppOnShow)
+  [WxPerformanceItemType.AppOnShow]() {
+    pushLife(this, WxPerformanceItemType.AppOnShow);
   },
-  [WxPerformanceItemType.PageOnLoad]: function () {
-    pushLife(this, WxPerformanceItemType.PageOnLoad)
+  [WxPerformanceItemType.PageOnLoad]() {
+    pushLife(this, WxPerformanceItemType.PageOnLoad);
   },
-  [WxPerformanceItemType.PageOnReady]: function () {
-    pushLife(this, WxPerformanceItemType.PageOnReady)
+  [WxPerformanceItemType.PageOnReady]() {
+    pushLife(this, WxPerformanceItemType.PageOnReady);
   },
-  [WxPerformanceItemType.PageOnUnload]: function () {
-    pushLife(this, WxPerformanceItemType.PageOnUnload)
+  [WxPerformanceItemType.PageOnUnload]() {
+    pushLife(this, WxPerformanceItemType.PageOnUnload);
   },
-  [WxPerformanceItemType.UserTap]: function (event: WxPerformanceAnyObj) {
-    pushAction(this, { ...event, itemType: WxPerformanceItemType.UserTap })
+  [WxPerformanceItemType.UserTap](event: WxPerformanceAnyObj) {
+    pushAction(this, { ...event, itemType: WxPerformanceItemType.UserTap });
   },
-  [WxPerformanceItemType.UserTouchMove]: function (event: WxPerformanceAnyObj) {
-    pushAction(this, { ...event, itemType: WxPerformanceItemType.UserTouchMove })
+  [WxPerformanceItemType.UserTouchMove](event: WxPerformanceAnyObj) {
+    pushAction(this, { ...event, itemType: WxPerformanceItemType.UserTouchMove });
   },
-  [WxPerformanceItemType.WxRequest]: function (data: WxPerformanceItem) {
-    pushNetwork(this, data)
+  [WxPerformanceItemType.WxRequest](data: WxPerformanceItem) {
+    pushNetwork(this, data);
   },
-  [WxPerformanceItemType.WxDownloadFile]: function (data: WxPerformanceItem) {
-    pushNetwork(this, data)
+  [WxPerformanceItemType.WxDownloadFile](data: WxPerformanceItem) {
+    pushNetwork(this, data);
   },
-  [WxPerformanceItemType.WxUploadFile]: function (data: WxPerformanceItem) {
-    pushNetwork(this, data)
-  }
-}
-export default Events
+  [WxPerformanceItemType.WxUploadFile](data: WxPerformanceItem) {
+    pushNetwork(this, data);
+  },
+};
+export default Events;

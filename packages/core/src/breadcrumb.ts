@@ -17,7 +17,7 @@ export class Breadcrumb {
   push(data: BreadcrumbPushData): void {
     if (typeof this.beforePushBreadcrumb === 'function') {
       let result: BreadcrumbPushData = null;
-      const beforePushBreadcrumb = this.beforePushBreadcrumb;
+      const { beforePushBreadcrumb } = this;
       silentConsoleScope(() => {
         result = beforePushBreadcrumb(this, data);
       });

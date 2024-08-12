@@ -3,6 +3,7 @@ import { htmlElementAsString, Severity } from 'encode-monitor-utils';
 import { EventTypes, BreadCrumbTypes } from 'encode-monitor-shared';
 import { breadcrumb, handleConsole } from 'encode-monitor-core';
 import { addReplaceHandler } from './replace';
+
 export function setupReplace(): void {
   addReplaceHandler({
     callback: (data) => {

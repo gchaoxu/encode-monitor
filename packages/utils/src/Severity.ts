@@ -13,6 +13,7 @@ export enum Severity {
   Critical = 'critical',
 }
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Severity {
   export function fromString(level: string): Severity {
     switch (level) {

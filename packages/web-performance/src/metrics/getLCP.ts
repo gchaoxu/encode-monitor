@@ -64,7 +64,7 @@ export const initLCP = (
       po.disconnect();
 
       if (!store.has(metricsName.LCP)) {
-        const value = lcp.value;
+        const { value } = lcp;
         const metrics = {
           name: metricsName.LCP,
           value: roundByFour(value.startTime, 2),

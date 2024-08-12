@@ -49,14 +49,14 @@ const _support = getGlobalMonitorSupport();
 export { _global, _support };
 
 _support.replaceFlag = _support.replaceFlag || {};
-const replaceFlag = _support.replaceFlag;
+const { replaceFlag } = _support;
 export function setFlag(replaceType: EventTypes | WxEvents, isSet: boolean): void {
   if (replaceFlag[replaceType]) return;
   replaceFlag[replaceType] = isSet;
 }
 
 export function getFlag(replaceType: EventTypes | WxEvents): boolean {
-  return replaceFlag[replaceType] ? true : false;
+  return !!replaceFlag[replaceType];
 }
 
 /**
@@ -73,8 +73,7 @@ export function supportsHistory(): boolean {
   // NOTE: in Chrome App environment, touching history.pushState, *even inside
   //       a try/catch block*, will cause Chrome to output an error to console.error
   // borrowed from: https://github.com/angular/angular.js/pull/13945/files
-  const chrome = (_global as any).chrome;
-  // tslint:disable-next-line:no-unsafe-any
+  const { chrome } = _global as any;
   const isChromePackagedApp = chrome && chrome.app && chrome.app.runtime;
   const hasHistoryApi =
     'history' in _global && !!_global.history.pushState && !!_global.history.replaceState;

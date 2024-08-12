@@ -6,10 +6,10 @@ export interface IConfig {
   isCustomEvent?: boolean;
   logFpsCount?: number;
   apiConfig?: {
-    [prop: string]: Array<string>;
+    [prop: string]: string[];
   };
   hashHistory?: boolean;
-  excludeRemotePath?: Array<string>;
+  excludeRemotePath?: string[];
   maxWaitCCPDuration: number;
   scoreConfig?: IScoreConfig;
 }
@@ -72,11 +72,11 @@ export interface IMetrics {
 
 export interface IWebVitals {
   immediately: boolean;
-  getCurrentMetrics(): IMetricsObj;
-  setStartMark(markName: string): void;
-  setEndMark(markName: string): void;
-  clearMark(markName: string): void;
-  customContentfulPaint(customMetricName: string): void;
+  getCurrentMetrics: () => IMetricsObj;
+  setStartMark: (markName: string) => void;
+  setEndMark: (markName: string) => void;
+  clearMark: (markName: string) => void;
+  customContentfulPaint: (customMetricName: string) => void;
 }
 
 export interface IReportHandler {

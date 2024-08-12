@@ -13,12 +13,12 @@ import {
 
 class Store extends Event {
   appId: string;
-  report: (data: Array<WxPerformanceData>) => void;
+  report: (data: WxPerformanceData[]) => void;
   immediately?: boolean;
   ignoreUrl?: RegExp;
   maxBreadcrumbs?: number;
 
-  private stack: Array<WxPerformanceData>;
+  private stack: WxPerformanceData[];
 
   // wx
   getBatteryInfo: () => WechatMiniprogram.GetBatteryInfoSyncResult;
@@ -33,7 +33,7 @@ class Store extends Event {
   wxLaunchTime: number;
 
   // 首次点击标志位
-  private firstAction: boolean = false;
+  private firstAction = false;
 
   // 路由跳转start时间记录
   private navigationMap: WxPerformanceAnyObj = {};
@@ -52,7 +52,7 @@ class Store extends Event {
     this.stack = [];
   }
 
-  async _pushData(data: Array<WxPerformanceData>) {
+  async _pushData(data: WxPerformanceData[]) {
     if (this.immediately) {
       this.report(data);
       return;
@@ -87,7 +87,7 @@ class Store extends Event {
 
   async _createPerformanceData(
     type: WxPerformanceDataType,
-    item: Array<WxPerformanceItem>,
+    item: WxPerformanceItem[],
   ): Promise<WxPerformanceData> {
     const networkType = await this._getNetworkType();
     const date = new Date();
@@ -98,18 +98,18 @@ class Store extends Event {
       time: date.toLocaleString(),
       uuid: generateUUID(),
       deviceId: getDeviceId(),
-      networkType: networkType,
+      networkType,
       // @ts-ignore
       batteryLevel: this.getBatteryInfo().level,
       systemInfo: this._getSystemInfo(),
       wxLaunch: this.wxLaunchTime,
       page: getPageUrl(),
-      type: type,
-      item: item,
+      type,
+      item,
     };
   }
 
-  push(type: WxPerformanceDataType, data: WxPerformanceItem | Array<WxPerformanceItem>) {
+  push(type: WxPerformanceDataType, data: WxPerformanceItem | WxPerformanceItem[]) {
     switch (type) {
       case WxPerformanceDataType.WX_LIFE_STYLE:
       case WxPerformanceDataType.WX_NETWORK:
@@ -119,7 +119,7 @@ class Store extends Event {
         this.handleMemoryWarning(data as WechatMiniprogram.OnMemoryWarningCallbackResult);
         break;
       case WxPerformanceDataType.WX_PERFORMANCE:
-        this.handleWxPerformance(data as Array<WxPerformanceItem>);
+        this.handleWxPerformance(data as WxPerformanceItem[]);
         break;
       case WxPerformanceDataType.WX_USER_ACTION:
         this.handleWxAction(data as WxPerformanceItem);
@@ -129,13 +129,13 @@ class Store extends Event {
   }
 
   async simpleHandle(type: WxPerformanceDataType, data: WxPerformanceItem) {
-    let d = await this._createPerformanceData(type as WxPerformanceDataType, [data]);
+    const d = await this._createPerformanceData(type as WxPerformanceDataType, [data]);
     this._pushData([d]);
   }
 
   // 内存警告会立即上报
   async handleMemoryWarning(data: WechatMiniprogram.OnMemoryWarningCallbackResult) {
-    let d = await this._createPerformanceData(WxPerformanceDataType.MEMORY_WARNING, [
+    const d = await this._createPerformanceData(WxPerformanceDataType.MEMORY_WARNING, [
       { ...data, itemType: WxPerformanceItemType.MemoryWarning, timestamp: Date.now() },
     ]);
     this.report([d]);
@@ -148,21 +148,21 @@ class Store extends Event {
     }
   }
 
-  async handleWxPerformance(data: Array<WxPerformanceItem> = []) {
-    let _data: Array<WxPerformanceItem> = data.map((d) => {
+  async handleWxPerformance(data: WxPerformanceItem[] = []) {
+    const _data: WxPerformanceItem[] = data.map((d) => {
       this.buildNavigationStart(d);
       d.itemType = WxPerformanceItemType.Performance;
       d.timestamp = Date.now();
       return d;
     });
-    let item = await this._createPerformanceData(WxPerformanceDataType.WX_PERFORMANCE, _data);
+    const item = await this._createPerformanceData(WxPerformanceDataType.WX_PERFORMANCE, _data);
     this._pushData([item]);
   }
 
   // 只统计首次点击
   async handleWxAction(data: WxPerformanceItem) {
     if (!this.firstAction) {
-      let d = await this._createPerformanceData(WxPerformanceDataType.WX_USER_ACTION, [data]);
+      const d = await this._createPerformanceData(WxPerformanceDataType.WX_USER_ACTION, [data]);
       this._pushData([d]);
       this.firstAction = true;
     }
@@ -186,7 +186,7 @@ class Store extends Event {
         const data = await this._createPerformanceData(WxPerformanceDataType.WX_LIFE_STYLE, [
           {
             itemType: WxPerformanceItemType.WxCustomPaint,
-            navigationStart: navigationStart,
+            navigationStart,
             timestamp: now,
             duration: now - navigationStart,
           },

@@ -78,7 +78,7 @@ const HandleEvents = {
     });
     transportData.send(result);
   },
-  
+
   handleNotErrorInstance(message: string, filename: string, lineno: number, colno: number) {
     let name: string | ErrorTypes = ErrorTypes.UNKNOWN;
     const url = filename || getLocationHref();
@@ -112,8 +112,8 @@ const HandleEvents = {
       type: BreadCrumbTypes.ROUTE,
       category: breadcrumb.getCategory(BreadCrumbTypes.ROUTE),
       data: {
-        from: parsedFrom ? parsedFrom : '/',
-        to: parsedTo ? parsedTo : '/',
+        from: parsedFrom || '/',
+        to: parsedTo || '/',
       },
       level: Severity.Info,
     });

@@ -13,7 +13,7 @@ export function replaceApp(store: Store) {
         replaceOld(
           appOptions,
           method.replace('AppOn', 'on'),
-          function (originMethod: () => void) {
+          (originMethod: () => void) => {
             return function (...args: any): void {
               // 让原本的函数比抛出的hooks先执行，便于埋点判断是否重复
               if (originMethod) {
@@ -44,7 +44,7 @@ function replacePageLifeMethods(
     replaceOld(
       options,
       method.replace('PageOn', 'on'),
-      function (originMethod: (args: any) => void) {
+      (originMethod: (args: any) => void) => {
         return function (...args: any[]): void {
           store.emit(method as WxPerformanceItemType, args);
           if (originMethod) {
@@ -72,13 +72,13 @@ function replaceAction(
   const ListenerTypes = Object.keys(WxListenerTypes);
   if (options) {
     Object.keys(options).forEach((m) => {
-      if ('function' !== typeof options[m]) {
+      if (typeof options[m] !== 'function') {
         return;
       }
       replaceOld(
         options,
         m,
-        function (originMethod: (args: any) => void) {
+        (originMethod: (args: any) => void) => {
           return function (...args: any[]): void {
             const event = args.find((arg) => arg && arg.type && arg.currentTarget);
             if (event && !event.monitorWorked && ListenerTypes.indexOf(event.type) > -1) {
@@ -137,7 +137,7 @@ export function replaceNetwork(store: Store) {
       writable: true,
       enumerable: true,
       configurable: true,
-      value: function (...args: any[]) {
+      value(...args: any[]) {
         const options:
           | WechatMiniprogram.RequestOption
           | WechatMiniprogram.DownloadFileOption
@@ -154,11 +154,13 @@ export function replaceNetwork(store: Store) {
         } as WxPerformanceAnyObj;
         switch (hook) {
           case 'request':
+            // eslint-disable-next-line no-case-declarations
             const { method } = options as WechatMiniprogram.RequestOption;
             reqData = { ...reqData, method };
             break;
           case 'downloadFile':
           case 'uploadFile':
+            // eslint-disable-next-line no-case-declarations
             const { filePath } = options as
               | WechatMiniprogram.DownloadFileOption
               | WechatMiniprogram.UploadFileOption;

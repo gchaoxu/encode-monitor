@@ -93,10 +93,8 @@ const beforeHandler = (url, apiConfig, hashHistory, excludeRemotePath) => {
           if (apiConfig[path].some((o) => remotePath === o)) {
             remoteQueue.queue.push(remotePath);
           }
-        } else {
-          if (!isDone) {
-            remoteQueue.queue.push(remotePath);
-          }
+        } else if (!isDone) {
+          remoteQueue.queue.push(remotePath);
         }
       }
     }
@@ -128,24 +126,22 @@ const afterHandler = (url, apiConfig, store, hashHistory, excludeRemotePath, sco
               computeCCPAndRL(store, scoreConfig);
             }
           }
-        } else {
-          if (
-            isIncludeArr(remoteQueue.queue, completeQueue) &&
-            !remoteQueue.hasStoreMetrics &&
-            isDone
-          ) {
-            console.log('api list = ', remoteQueue.queue);
-            remoteQueue.hasStoreMetrics = true;
-            const now = performance.now();
-            if (now < getFirstHiddenTime().timeStamp) {
-              storeMetrics(
-                metricsName.ACT,
-                { time: now, remoteApis: remoteQueue.queue },
-                store,
-                scoreConfig,
-              );
-              computeCCPAndRL(store, scoreConfig);
-            }
+        } else if (
+          isIncludeArr(remoteQueue.queue, completeQueue) &&
+          !remoteQueue.hasStoreMetrics &&
+          isDone
+        ) {
+          console.log('api list = ', remoteQueue.queue);
+          remoteQueue.hasStoreMetrics = true;
+          const now = performance.now();
+          if (now < getFirstHiddenTime().timeStamp) {
+            storeMetrics(
+              metricsName.ACT,
+              { time: now, remoteApis: remoteQueue.queue },
+              store,
+              scoreConfig,
+            );
+            computeCCPAndRL(store, scoreConfig);
           }
         }
       }
@@ -203,9 +199,9 @@ export const initCCP = (
   store: metricsStore,
   report: IReportHandler,
   isCustomEvent: boolean,
-  apiConfig: { [prop: string]: Array<string> },
+  apiConfig: { [prop: string]: string[] },
   hashHistory: boolean,
-  excludeRemotePath: Array<string>,
+  excludeRemotePath: string[],
   maxWaitCCPDuration: number,
   immediately: boolean,
   scoreConfig: IScoreConfig,

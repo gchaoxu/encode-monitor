@@ -189,7 +189,7 @@ function fetchReplace(): void {
 
 function listenHashchange(): void {
   if (!isExistProperty(_global, 'onpopstate')) {
-    on(_global, EventTypes.HASHCHANGE, function (e: HashChangeEvent) {
+    on(_global, EventTypes.HASHCHANGE, (e: HashChangeEvent) => {
       triggerHandlers(EventTypes.HASHCHANGE, e);
     });
   }
@@ -199,7 +199,7 @@ function listenError(): void {
   on(
     _global,
     'error',
-    function (e: ErrorEvent) {
+    (e: ErrorEvent) => {
       triggerHandlers(EventTypes.ERROR, e);
     },
     true,
@@ -211,9 +211,9 @@ function consoleReplace(): void {
     return;
   }
   const logType = ['log', 'debug', 'info', 'warn', 'error', 'assert'];
-  logType.forEach(function (level: string): void {
+  logType.forEach((level: string): void => {
     if (!(level in _global.console)) return;
-    replaceOld(_global.console, level, function (originalConsole: () => any): Function {
+    replaceOld(_global.console, level, (originalConsole: () => any): Function => {
       return function (...args: any[]): void {
         if (originalConsole) {
           triggerHandlers(EventTypes.CONSOLE, { args, level });
@@ -259,7 +259,7 @@ function historyReplace(): void {
 }
 
 function unhandledrejectionReplace(): void {
-  on(_global, EventTypes.UNHANDLEDREJECTION, function (ev: PromiseRejectionEvent) {
+  on(_global, EventTypes.UNHANDLEDREJECTION, (ev: PromiseRejectionEvent) => {
     // ev.preventDefault() 阻止默认行为后，控制台就不会再报红色错误
     triggerHandlers(EventTypes.UNHANDLEDREJECTION, ev);
   });

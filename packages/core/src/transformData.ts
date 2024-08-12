@@ -55,7 +55,7 @@ export function resourceTransform(target: ResourceErrorTarget): ReportDataType {
   return {
     type: ErrorTypes.RESOURCE_ERROR,
     url: getLocationHref(),
-    message: '资源地址: ' + (interceptStr(target.src, 120) || interceptStr(target.href, 120)),
+    message: `资源地址: ${interceptStr(target.src, 120) || interceptStr(target.href, 120)}`,
     level: Severity.Low,
     time: getTimestamp(),
     name: `${resourceMap[target.localName] || target.localName}加载失败`,

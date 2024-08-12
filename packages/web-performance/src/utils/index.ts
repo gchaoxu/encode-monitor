@@ -31,7 +31,7 @@ export const unload = (callback) => {
   window.addEventListener('unload', callback);
 };
 
-export const validNumber = (nums: number | Array<number>) => {
+export const validNumber = (nums: number | number[]) => {
   if (Array.isArray(nums)) {
     return nums.every((n) => n >= 0);
   } else {
@@ -39,7 +39,7 @@ export const validNumber = (nums: number | Array<number>) => {
   }
 };
 
-export const isIncludeArr = (arr1: Array<string>, arr2: Array<string>): boolean => {
+export const isIncludeArr = (arr1: string[], arr2: string[]): boolean => {
   if (!arr1 || arr1.length === 0) {
     return false;
   }
@@ -61,7 +61,7 @@ export const isIncludeArr = (arr1: Array<string>, arr2: Array<string>): boolean 
   return true;
 };
 
-export const isEqualArr = (arr1: Array<string>, arr2: Array<string>): boolean => {
+export const isEqualArr = (arr1: string[], arr2: string[]): boolean => {
   if (!arr1 || arr1.length === 0) {
     return false;
   }
@@ -89,7 +89,7 @@ export const getApiPath = (url: string): string => {
   return '';
 };
 
-export const isExistPath = (paths: Array<string>, target: string) => {
+export const isExistPath = (paths: string[], target: string) => {
   const regArr = paths.map((path) => pathToRegexp(path));
 
   for (let i = 0; i < regArr.length; i++) {

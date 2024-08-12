@@ -48,6 +48,7 @@ export const initCLS = (
 
   const stopListening = () => {
     if (po?.takeRecords) {
+      // eslint-disable-next-line array-callback-return
       po.takeRecords().map((entry: LayoutShift) => {
         if (!entry.hadRecentInput) {
           cls.value += entry.value;

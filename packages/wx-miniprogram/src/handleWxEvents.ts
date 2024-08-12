@@ -281,7 +281,7 @@ const HandleWxEvents = {
         type: ErrorTypes.ROUTE_ERROR,
         message: data.message,
         url: data.to,
-        name: 'MINI_' + ErrorTypes.ROUTE_ERROR,
+        name: `MINI_${ErrorTypes.ROUTE_ERROR}`,
         level: Severity.Error,
       };
 

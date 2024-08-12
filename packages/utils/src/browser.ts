@@ -16,7 +16,7 @@ export function htmlElementAsString(target: HTMLElement): string {
   let classNames = target.classList.value;
   classNames = classNames !== '' ? ` class="${classNames}"` : '';
   const id = target.id ? ` id="${target.id}"` : '';
-  const innerText = target.innerText;
+  const { innerText } = target;
   return `<${tagName}${id}${classNames !== '' ? classNames : ''}>${innerText}</${tagName}>`;
 }
 
@@ -88,18 +88,20 @@ export function extractErrorStack(ex: any, level: Severity): ReportDataType {
   }
 
   const chrome =
-      /^\s*at (.*?) ?\(((?:file|https?|blob|chrome-extension|native|eval|webpack|<anonymous>|[a-z]:|\/).*?)(?::(\d+))?(?::(\d+))?\)?\s*$/i,
-    gecko =
-      /^\s*(.*?)(?:\((.*?)\))?(?:^|@)((?:file|https?|blob|chrome|webpack|resource|\[native).*?|[^@]*bundle)(?::(\d+))?(?::(\d+))?\s*$/i,
-    winjs =
-      /^\s*at (?:((?:\[object object\])?.+) )?\(?((?:file|ms-appx|https?|webpack|blob):.*?):(\d+)(?::(\d+))?\)?\s*$/i,
-    // Used to additionally parse URL/line/column from eval frames
-    geckoEval = /(\S+) line (\d+)(?: > eval line \d+)* > eval/i,
-    chromeEval = /\((\S*)(?::(\d+))(?::(\d+))\)/,
-    lines = ex.stack.split('\n'),
-    stack = [];
+    /^\s*at (.*?) ?\(((?:file|https?|blob|chrome-extension|native|eval|webpack|<anonymous>|[a-z]:|\/).*?)(?::(\d+))?(?::(\d+))?\)?\s*$/i;
+  const gecko =
+    /^\s*(.*?)(?:\((.*?)\))?(?:^|@)((?:file|https?|blob|chrome|webpack|resource|\[native).*?|[^@]*bundle)(?::(\d+))?(?::(\d+))?\s*$/i;
+  const winjs =
+    /^\s*at (?:((?:\[object object\])?.+) )?\(?((?:file|ms-appx|https?|webpack|blob):.*?):(\d+)(?::(\d+))?\)?\s*$/i;
+  // Used to additionally parse URL/line/column from eval frames
+  const geckoEval = /(\S+) line (\d+)(?: > eval line \d+)* > eval/i;
+  const chromeEval = /\((\S*)(?::(\d+))(?::(\d+))\)/;
+  const lines = ex.stack.split('\n');
+  const stack = [];
 
-  let submatch, parts, element;
+  let submatch;
+  let parts;
+  let element;
   // reference = /^(.*) is undefined$/.exec(ex.message)
 
   for (let i = 0, j = lines.length; i < j; ++i) {
@@ -163,6 +165,6 @@ export function extractErrorStack(ex: any, level: Severity): ReportDataType {
   }
   return {
     ...normal,
-    stack: stack,
+    stack,
   };
 }

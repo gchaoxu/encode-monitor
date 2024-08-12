@@ -1,5 +1,6 @@
 import { EventTypes, WxEvents } from 'encode-monitor-shared';
 import { getFlag, getFunctionName, logger, nativeTryCatch, setFlag } from 'encode-monitor-utils';
+
 export interface ReplaceHandler {
   type: EventTypes | WxEvents;
   callback: ReplaceCallback;

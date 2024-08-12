@@ -9,6 +9,7 @@ import {
 } from 'encode-monitor-utils';
 import { breadcrumb } from './breadcrumb';
 import { transportData } from './transportData';
+
 export class Options {
   beforeAppAjaxSend: Function = () => {};
   enableTraceId: Boolean;

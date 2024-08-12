@@ -38,7 +38,7 @@ export function handleVueError(
         break;
       default:
         return;
-        break;
+      // break;
     }
   }
   breadcrumb.push({
@@ -58,9 +58,9 @@ function vue2VmHandler(vm: ViewModel) {
       ? (vm.$options && vm.$options.name) || (vm.$options && vm.$options._componentTag)
       : vm.name;
     componentName =
-      (name ? 'component <' + name + '>' : 'anonymous component') +
+      (name ? `component <${name}>` : 'anonymous component') +
       (vm._isVue && vm.$options && vm.$options.__file
-        ? ' at ' + (vm.$options && vm.$options.__file)
+        ? ` at ${vm.$options && vm.$options.__file}`
         : '');
   }
   return {
@@ -75,7 +75,7 @@ function vue3VmHandler(vm: ViewModel) {
   } else {
     console.log(vm.$options);
     const name = vm.$options && vm.$options.name;
-    componentName = name ? 'component <' + name + '>' : 'anonymous component';
+    componentName = name ? `component <${name}>` : 'anonymous component';
   }
   return {
     componentName,

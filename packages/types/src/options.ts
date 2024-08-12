@@ -1,6 +1,7 @@
 import { Breadcrumb } from 'encode-monitor-core';
 import { BreadcrumbPushData } from './breadcrumb';
 import { TransportDataType } from './transportData';
+
 type CANCEL = null | undefined | boolean;
 
 export type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS';
@@ -102,16 +103,16 @@ export interface HooksTypes {
    * xhr.withCredentials = true,后面调用该函数
    * ../param xhr XMLHttpRequest的实例
    */
-  configReportXhr?(xhr: XMLHttpRequest, reportData: TransportDataType | any): void;
+  configReportXhr?: (xhr: XMLHttpRequest, reportData: TransportDataType | any) => void;
   /**
    * 钩子函数，在每次发送事件前会调用
    *
    * ../param event 有SDK生成的错误事件
    * ../returns 如果返回 null | undefined | boolean 时，将忽略本次上传
    */
-  beforeDataReport?(
+  beforeDataReport?: (
     event: TransportDataType,
-  ): Promise<TransportDataType | null | CANCEL> | TransportDataType | any | CANCEL | null;
+  ) => Promise<TransportDataType | null | CANCEL> | TransportDataType | any | CANCEL | null;
   /**
    *
    * 钩子函数，每次发送前都会调用
@@ -120,7 +121,7 @@ export interface HooksTypes {
    * @returns {string} 返回空时不上报
    * @memberof HooksTypes
    */
-  configReportUrl?(event: TransportDataType, url: string): string;
+  configReportUrl?: (event: TransportDataType, url: string) => string;
   /**
    * 钩子函数，在每次添加用户行为事件前都会调用
    *
@@ -128,10 +129,10 @@ export interface HooksTypes {
    * ../param hint 当次的生成的breadcrumb数据
    * ../returns 如果返回 null | undefined | boolean 时，将忽略本次的push
    */
-  beforePushBreadcrumb?(
+  beforePushBreadcrumb?: (
     breadcrumb: Breadcrumb,
     hint: BreadcrumbPushData,
-  ): BreadcrumbPushData | CANCEL;
+  ) => BreadcrumbPushData | CANCEL;
   /**
    * 在状态小于400并且不等于0的时候回调用当前hook
    * ../param data 请求状态为200时返回的响应体
@@ -142,16 +143,16 @@ export interface HooksTypes {
    * 钩子函数，拦截用户页面的ajax请求，并在ajax请求发送前执行该hook，可以对用户发送的ajax请求做xhr.setRequestHeader
    * ../param config 当前请求的
    */
-  beforeAppAjaxSend?(
+  beforeAppAjaxSend?: (
     config: IRequestHeaderConfig,
     setRequestHeader: IBeforeAppAjaxSendConfig,
-  ): void;
+  ) => void;
 
   /**
    * 钩子函数，在beforeDataReport后面调用，在整合上报数据和本身SDK信息数据前调用，当前函数执行完后立即将数据错误信息上报至服务端
    * trackerId表示用户唯一键（可以理解成userId），需要trackerId的意义可以区分每个错误影响的用户数量
    */
-  backTrackerId?(): string | number;
+  backTrackerId?: () => string | number;
 }
 
 export interface SilentEventTypes {
@@ -225,61 +226,63 @@ interface WxMiniHooksTypes {
   /**
    * wx小程序上报时的wx.request配置
    */
-  configReportWxRequest?(event: TransportDataType | any): Partial<WechatMiniprogram.RequestOption>;
+  configReportWxRequest?: (
+    event: TransportDataType | any,
+  ) => Partial<WechatMiniprogram.RequestOption>;
   /**
    * wx小程序的App下的onLaunch执行完后再执行以下hook
    */
-  appOnLaunch?(options: WechatMiniprogram.App.LaunchShowOption): void;
+  appOnLaunch?: (options: WechatMiniprogram.App.LaunchShowOption) => void;
   /**
    * wx小程序的App下的OnShow执行完后再执行以下hook
    */
-  appOnShow?(options: WechatMiniprogram.App.LaunchShowOption): void;
+  appOnShow?: (options: WechatMiniprogram.App.LaunchShowOption) => void;
   /**
    * wx小程序的App下的OnHide执行完后再执行以下hook
    */
-  appOnHide?(page: IWxPageInstance): void;
+  appOnHide?: (page: IWxPageInstance) => void;
   /**
    * wx小程序的App下的onPageNotFound执行完后再执行以下hook
    */
-  onPageNotFound?(data: WechatMiniprogram.OnPageNotFoundCallbackResult): void;
+  onPageNotFound?: (data: WechatMiniprogram.OnPageNotFoundCallbackResult) => void;
   /**
    * 先执行hook:pageOnShow再执行wx小程序的Page下的onShow
    */
-  pageOnShow?(page: IWxPageInstance): void;
+  pageOnShow?: (page: IWxPageInstance) => void;
   /**
    * wx小程序的App下的pageOnUnload执行完后再执行以下hook
    */
-  pageOnUnload?(page: IWxPageInstance): void;
+  pageOnUnload?: (page: IWxPageInstance) => void;
   /**
    * 先执行hook:pageOnHide再执行wx小程序的Page下的onHide
    */
-  pageOnHide?(page: IWxPageInstance): void;
+  pageOnHide?: (page: IWxPageInstance) => void;
   /**
    * 先执行hook:onShareAppMessage再执行wx小程序的Page下的onShareAppMessage
    */
-  onShareAppMessage?(
+  onShareAppMessage?: (
     options: WechatMiniprogram.Page.IShareAppMessageOption & IWxPageInstance,
-  ): void;
+  ) => void;
   /**
    * 先执行hook:onShareTimeline再执行wx小程序的Page下的onShareTimeline
    */
-  onShareTimeline?(page: IWxPageInstance): void;
+  onShareTimeline?: (page: IWxPageInstance) => void;
   /**
    * 先执行hook:onTabItemTap再执行wx小程序的Page下的onTabItemTap
    */
-  onTabItemTap?(options: WechatMiniprogram.Page.ITabItemTapOption & IWxPageInstance): void;
+  onTabItemTap?: (options: WechatMiniprogram.Page.ITabItemTapOption & IWxPageInstance) => void;
   /**
    * 重写wx.NavigateToMiniProgram将里面的参数抛出来，便于在跳转时更改query和extraData
    * @param options
    */
-  wxNavigateToMiniProgram?(
+  wxNavigateToMiniProgram?: (
     options: WechatMiniprogram.NavigateToMiniProgramOption,
-  ): WechatMiniprogram.NavigateToMiniProgramOption;
+  ) => WechatMiniprogram.NavigateToMiniProgramOption;
   /**
    * 代理Action中所有函数，拿到第一个参数并抛出成hook
    * @param e
    */
-  triggerWxEvent?(e: WechatMiniprogram.BaseEvent): void;
+  triggerWxEvent?: (e: WechatMiniprogram.BaseEvent) => void;
 }
 
 export interface BrowserHooksTypes {

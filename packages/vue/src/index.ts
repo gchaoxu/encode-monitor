@@ -14,7 +14,7 @@ const MonitorVue = {
       handleVueError.apply(null, [err, vm, info, Severity.Normal, Severity.Error, Vue]);
       if (hasConsole && !Vue.config.silent) {
         silentConsoleScope(() => {
-          console.error('Error in ' + info + ': "' + err.toString() + '"', vm);
+          console.error(`Error in ${info}: "${err.toString()}"`, vm);
           console.error(err);
         });
       }

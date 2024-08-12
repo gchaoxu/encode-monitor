@@ -2,17 +2,17 @@ import { IAnyObject } from 'encode-monitor-types';
 
 export interface VueInstance {
   config?: VueConfiguration;
-  mixin(hooks: { [key: string]: () => void }): void;
+  mixin: (hooks: { [key: string]: () => void }) => void;
   util: {
-    warn(...input: any): void;
+    warn: (...input: any) => void;
   };
   version: string;
 }
 export interface VueConfiguration {
   silent: boolean;
-  errorHandler(err: Error, vm: ViewModel, info: string): void;
-  warnHandler(msg: string, vm: ViewModel, trace: string): void;
-  ignoredElements: (string | RegExp)[];
+  errorHandler: (err: Error, vm: ViewModel, info: string) => void;
+  warnHandler: (msg: string, vm: ViewModel, trace: string) => void;
+  ignoredElements: Array<string | RegExp>;
   keyCodes: { [key: string]: number | number[] };
   async: boolean;
 }

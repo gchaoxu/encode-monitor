@@ -63,7 +63,7 @@ export const CompositeEvents = {
   ...WxRouterEvents,
 };
 
-export type CompositeEvents = typeof CompositeEvents;
+export type CompositeEventsType = typeof CompositeEvents;
 
 /**
  * 用户行为栈事件类型

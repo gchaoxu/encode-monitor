@@ -77,7 +77,7 @@ export function replaceApp() {
         replaceOld(
           appOptions,
           method.replace('AppOn', 'on'),
-          function (originMethod: voidFun) {
+          (originMethod: voidFun) => {
             return function (...args: any): void {
               // 让原本的函数比抛出的hooks先执行，便于埋点判断是否重复
               if (originMethod) {
@@ -118,7 +118,7 @@ function replacePageLifeMethods(
     replaceOld(
       options,
       method.replace('PageOn', 'on'),
-      function (originMethod: (args: any) => void) {
+      (originMethod: (args: any) => void) => {
         return function (...args: any[]): void {
           triggerHandlers.apply(null, [method, ...args]);
           if (originMethod) {
@@ -213,13 +213,13 @@ function replaceAction(
   const listenerTypes = [EListenerTypes.Touchmove, EListenerTypes.Tap];
   if (options) {
     Object.keys(options).forEach((m) => {
-      if ('function' !== typeof options[m]) {
+      if (typeof options[m] !== 'function') {
         return;
       }
       replaceOld(
         options,
         m,
-        function (originMethod: (args: any) => void) {
+        (originMethod: (args: any) => void) => {
           return function (...args: any): void {
             const e = args[0];
             if (e && e.type && e.currentTarget && !e.monitorWorked) {
@@ -239,9 +239,9 @@ function replaceAction(
 function replaceConsole() {
   if (console && variableTypeDetection.isObject(console)) {
     const logType = ['log', 'debug', 'info', 'warn', 'error', 'assert'];
-    logType.forEach(function (level: string): void {
+    logType.forEach((level: string): void => {
       if (!(level in console)) return;
-      replaceOld(console, level, function (originalConsole): Function {
+      replaceOld(console, level, (originalConsole): Function => {
         return function (...args: any[]): void {
           if (originalConsole) {
             triggerHandlers(EventTypes.CONSOLE, { args, level });
@@ -263,7 +263,7 @@ export function replaceNetwork() {
       writable: true,
       enumerable: true,
       configurable: true,
-      value: function (...args: any[]) {
+      value(...args: any[]) {
         const options:
           | WechatMiniprogram.RequestOption
           | WechatMiniprogram.DownloadFileOption
@@ -278,7 +278,7 @@ export function replaceNetwork() {
           method = EMethods.Post;
         }
         const { url } = options;
-        let header = options.header;
+        let { header } = options;
         !header && (header = {});
 
         if (
@@ -287,7 +287,7 @@ export function replaceNetwork() {
         ) {
           return originRequest.call(this, options);
         }
-        let reqData = undefined;
+        let reqData;
         if (hook === 'request') {
           reqData = (options as WechatMiniprogram.RequestOption).data;
         } else if (hook === 'downloadFile') {
@@ -380,7 +380,7 @@ export function replaceRoute() {
       writable: true,
       enumerable: true,
       configurable: true,
-      value: function (
+      value(
         options:
           | WechatMiniprogram.SwitchTabOption
           | WechatMiniprogram.ReLaunchOption
