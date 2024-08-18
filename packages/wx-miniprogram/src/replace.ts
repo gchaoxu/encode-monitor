@@ -56,6 +56,7 @@ export function addReplaceHandler(handler: ReplaceHandler) {
   replace(handler.type as WxEvents);
 }
 
+// 对小程序应用级事件进行监听
 export function replaceApp() {
   if (App) {
     const originApp = App;
@@ -274,8 +275,10 @@ export function replaceNetwork() {
         if ((options as WechatMiniprogram.RequestOption).method) {
           method = (options as WechatMiniprogram.RequestOption).method;
         } else if (hook === 'downloadFile') {
+          // DownloadFile 使用的是 Get 请求
           method = EMethods.Get;
         } else {
+          // UploadFile
           method = EMethods.Post;
         }
         const { url } = options;
@@ -286,6 +289,7 @@ export function replaceNetwork() {
           (method === EMethods.Post && transportData.isSdkTransportUrl(url)) ||
           isFilterHttpUrl(url)
         ) {
+          // UploadFile 不需要做拦截，直接使用原生请求就可以
           return originRequest.call(this, options);
         }
         let reqData;
@@ -303,6 +307,7 @@ export function replaceNetwork() {
             name: (options as WechatMiniprogram.UploadFileOption).name,
           };
         }
+        // 创建符合上传标准的格式
         const data: MonitorHttp = {
           type: HttpTypes.XHR,
           method,
@@ -310,6 +315,7 @@ export function replaceNetwork() {
           reqData,
           sTime: getTimestamp(),
         };
+        // 生成唯一的日志
         setTraceId(url, (headerFieldName, traceId) => {
           data.traceId = traceId;
           header[headerFieldName] = traceId;
@@ -325,6 +331,7 @@ export function replaceNetwork() {
           | WechatMiniprogram.DownloadFileSuccessCallback
           | WechatMiniprogram.UploadFileFailCallback = function (res) {
           const endTime = getTimestamp();
+          // 在成功回调函数中添加上报数据
           data.responseText =
             (variableTypeDetection.isString(res.data) ||
               variableTypeDetection.isObject(res.data)) &&
@@ -333,7 +340,7 @@ export function replaceNetwork() {
           data.status = res.statusCode;
           data.errMsg = res.errMsg;
           data.time = endTime;
-
+          // 通过订阅-发布模式，发布消息，传递需要上报的数据
           triggerHandlers(EventTypes.XHR, data);
           if (typeof options.success === 'function') {
             return options.success(res);
@@ -359,13 +366,18 @@ export function replaceNetwork() {
           success: successHandler,
           fail: failHandler,
         };
+        // 通过原生的请求处理
         return originRequest.call(this, actOptions);
       },
     });
   });
 }
 
-// wx Route
+/**
+ * wx Route：
+ * 1. 监听原生事件
+ * 2. 进行路由覆盖
+ * */
 export function replaceRoute() {
   const methods = [
     WxRouterEvents.SwitchTab,
@@ -392,16 +404,20 @@ export function replaceRoute() {
       ) {
         let toUrl;
         if (method === WxRouterEvents.NavigateBack) {
+          // 如果是 WxRouterEvents.NavigateBack 需要计算 url
           toUrl = getNavigateBackTargetUrl(
             (options as WechatMiniprogram.NavigateBackOption)?.delta,
           );
         } else {
           toUrl = (options as WechatMiniprogram.SwitchTabOption).url;
         }
+
+        // 定义符合上传标准的格式
         const data = {
           from: getCurrentRoute(),
           to: toUrl,
         };
+        // 发布事件，传递上报数据
         triggerHandlers(EventTypes.MINI_ROUTE, data);
         // 如果complete||success||fail一个都没有，则原方法返回promise，此时sdk也不需要处理
         if (
@@ -409,6 +425,7 @@ export function replaceRoute() {
           variableTypeDetection.isFunction(options.success) ||
           variableTypeDetection.isFunction(options.fail)
         ) {
+          // TODO 这里没有添加 complete success 的监听
           const _fail = options.fail;
           const failHandler:
             | WechatMiniprogram.SwitchTabFailCallback
