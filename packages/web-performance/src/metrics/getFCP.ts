@@ -32,6 +32,7 @@ const getFCP = (): Promise<PerformanceEntry> => {
             po.disconnect();
           }
 
+          // 首屏加载，也就是开始时间小于页面第一次关闭的时间
           if (entry.startTime < getFirstHiddenTime().timeStamp) {
             resolve(entry);
           }

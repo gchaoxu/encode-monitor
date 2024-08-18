@@ -17,6 +17,7 @@ import {
 } from 'encode-monitor-utils';
 import { ReportDataType, Replace, MonitorHttp, ResourceErrorTarget } from 'encode-monitor-types';
 
+// 1. 执行订阅中心，触发事件回调
 const HandleEvents = {
   /**
    * 处理xhr、fetch回调
@@ -26,7 +27,9 @@ const HandleEvents = {
       data.status === 0 ||
       data.status === HttpCodes.BAD_REQUEST ||
       data.status > HttpCodes.UNAUTHORIZED;
+    // 2. 数据格式化，处理成标准的日志上报数据
     const result = httpTransform(data);
+    // 3. 添加用户行为信息的记录
     breadcrumb.push({
       type,
       category: breadcrumb.getCategory(type),
@@ -42,6 +45,7 @@ const HandleEvents = {
         level: Severity.Error,
         time: data.time,
       });
+      // 4. 发送到服务器
       transportData.send(result);
     }
   },
