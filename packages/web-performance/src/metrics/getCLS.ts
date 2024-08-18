@@ -57,6 +57,7 @@ export const initCLS = (
     }
     po?.disconnect();
 
+    // CLS metaData
     const metrics = {
       name: metricsName.CLS,
       value: roundByFour(cls.value),
