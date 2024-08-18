@@ -45,6 +45,7 @@ function replace(type: WxEvents | EventTypes) {
       break;
     case EventTypes.MINI_ROUTE:
       replaceRoute();
+    // eslint-disable-next-line no-fallthrough
     default:
       break;
   }

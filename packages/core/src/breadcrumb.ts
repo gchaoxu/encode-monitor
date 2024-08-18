@@ -8,6 +8,7 @@ import {
 } from 'encode-monitor-utils';
 import { BreadcrumbPushData, InitOptions } from 'encode-monitor-types';
 
+// 用户行为
 export class Breadcrumb {
   maxBreadcrumbs = 10;
   beforePushBreadcrumb: unknown = null;

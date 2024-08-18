@@ -44,6 +44,7 @@ export class TransportData {
       img.src = `${url}${spliceStr}data=${encodeURIComponent(JSON.stringify(data))}`;
       img = null;
     };
+    // 创建上报请求的执行
     this.queue.addFn(requestFun);
   }
 
@@ -216,6 +217,7 @@ export class TransportData {
       if (!dsn) return;
     }
 
+    // 浏览器环境，判断是 图片上传还是 xhr 上传
     if (isBrowserEnv) {
       return this.useImgUpload ? this.imgRequest(result, dsn) : this.xhrPost(result, dsn);
     }

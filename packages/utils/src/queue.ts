@@ -1,6 +1,10 @@
 import { voidFun } from 'encode-monitor-shared';
 import { _global } from './global';
 
+/**
+ * 创建好埋点发送方式，确定上报时机，主要的目的是不阻塞页面的执行
+ * 时机：微任务执行的时机， Promise.then
+ * */
 export class Queue {
   private micro: Promise<void>;
   private stack: any[] = [];
